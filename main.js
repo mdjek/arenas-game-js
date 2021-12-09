@@ -26,9 +26,7 @@ const createHTMLElement = (tag = 'div', classname, content) => {
   }
 
   if (typeof content === 'object' && content.length && content.length > 0) {
-     content.map((item) => {
-      element.appendChild(item);
-    });
+     content.forEach((item) => element.appendChild(item));
   }
 
   return element;

@@ -32,7 +32,7 @@ const createHTMLElement = (tag = 'div', classname, content) => {
   return element;
 }
 
-createPlayerMarkup = (player, name, hp, pathToImg) => {
+createPlayerMarkup = (playerName, name, hp, pathToImg) => {
   const lifeEl = createHTMLElement('div', 'life', hp);
   const nameEl = createHTMLElement('div', 'name', name);
   const imgEl = createHTMLElement('img');
@@ -41,7 +41,7 @@ createPlayerMarkup = (player, name, hp, pathToImg) => {
   const progressbarEl = createHTMLElement('div', 'progressbar', [lifeEl, nameEl]);
   const characterEl = createHTMLElement('div', 'character', [imgEl]);
 
-  return createHTMLElement('div', player, [progressbarEl, characterEl]);
+  return createHTMLElement('div', playerName, [progressbarEl, characterEl]);
 }
 
 const createPlayer = (playerName, data) => {

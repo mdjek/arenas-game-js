@@ -32,12 +32,12 @@ const createHTMLElement = (tag = 'div', classname, content) => {
   return element;
 }
 
-createPlayerMarkup = (player, name, hp, imgPath) => {
+createPlayerMarkup = (player, name, hp, pathToImg) => {
   const lifeEl = createHTMLElement('div', 'life', hp);
   const nameEl = createHTMLElement('div', 'name', name);
   const progressbarEl = createHTMLElement('div', 'progressbar', [lifeEl, nameEl]);
   const imgEl = createHTMLElement('img');
-  imgEl.src = imgPath;
+  imgEl.src = pathToImg;
   const characterEl = createHTMLElement('div', 'character', [imgEl]);
 
   return createHTMLElement('div', player, [progressbarEl, characterEl]);

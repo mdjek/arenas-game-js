@@ -21,7 +21,7 @@ const createHTMLElement = (tag = 'div', classname, content) => {
     element.classList.add(classname);
   }
 
-  if (['string', 'number'].includes(typeof content)) {
+  if (typeof content === 'string') {
     element.innerHTML = content;
   }
 

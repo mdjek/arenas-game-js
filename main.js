@@ -102,7 +102,7 @@ const createReloadButton = () => {
 function changeHP(value) {
   this.hp -= value;
 
-  if (this.hp <= 0) {
+  if (this.hp < 0) {
     this.hp = 0;
   }
 }

@@ -9,20 +9,39 @@ const NAME_MAP = {
 const arenasBlock = document.querySelector('.arenas');
 const randomButton = document.querySelector('.control button');
 
-const between = (min = 1, max = 20) => {
+const getRandomNumber = (min = 1, max = 20) => {
   return Math.floor(
     Math.random() * (max - min + 1) + min
   );
 };
 
-function Player (name, weapon, position, hp = 100) {
-  this.name = name;
-  this.weapon = weapon;
-  this.player = position;
-  this.hp = hp;
-  this.img = NAME_MAP[name];
-  this.attack = function () { console.log(`${this.name} Fight...`) };
-}
+const player1 = {
+  name: 'SCORPION',
+  hp: 45,
+  player: 1,
+  img: (function () {
+    return NAME_MAP['SCORPION']
+  })(),
+  weapon: ['example', 'gun'],
+  attack: function () {
+    console.log(`${this.name} Fight...`)
+  },
+  changeHP,
+  elHP,
+  renderHP
+};
+
+const player2 = {
+  name: 'SONYA',
+  hp: 75,
+  player: 2,
+  img: (function() { return NAME_MAP['SONYA'] })(),
+  weapon: ['example', 'gun'],
+  attack: () => console.log(`${this.name} Fight...`),
+  changeHP,
+  elHP,
+  renderHP
+};
 
 const createHTMLElement = (tag = 'div', classname, content) => {
   const element = document.createElement(tag);
@@ -40,7 +59,7 @@ const createHTMLElement = (tag = 'div', classname, content) => {
   }
 
   return element;
-}
+};
 
 const createPlayerMarkup = (playerName, name, hp, pathToImg) => {
   const lifeEl = createHTMLElement('div', 'life');
@@ -54,42 +73,74 @@ const createPlayerMarkup = (playerName, name, hp, pathToImg) => {
   const characterEl = createHTMLElement('div', 'character', [imgEl]);
 
   return createHTMLElement('div', playerName, [progressbarEl, characterEl]);
-}
+};
 
 const createPlayer = (playerName, data) => {
   const { name, hp, img } = data;
   const player = createPlayerMarkup(playerName, name, hp, img);
 
   arenasBlock.appendChild(player);
-}
-
-const changeHP = (player, opponent) => {
-  const playerLife = document.querySelector(`.player${player.player} .life`);
-
-  player.hp -= between();
-
-  if (player.hp <= 0) {
-    player.hp = 0;
-    randomButton.disabled = true;
-
-    renderPlayerWin(opponent.name);
-  }
-
-  playerLife.style.width = `${player.hp}%`;
-}
+};
 
 const renderPlayerWin = (name) => {
-  const winTitle = createHTMLElement('div', 'winTitle', `${name} wins`);
+  const winnerName = name ? `${name} wins` : 'draw';
+
+  const winTitle = createHTMLElement('div', 'winTitle', winnerName);
 
   arenasBlock.appendChild(winTitle);
+};
+
+const createReloadButton = () => {
+  const reloadButton = createHTMLElement('button', 'button', 'Reload');
+  const reloadButtonWrapper = createHTMLElement('div', 'reloadWrap', [reloadButton]);
+
+  arenasBlock.appendChild(reloadButtonWrapper);
+
+  return reloadButton;
+};
+
+function changeHP(value) {
+  this.hp -= value;
+
+  if (this.hp < 0) {
+    this.hp = 0;
+  }
 }
 
-const player1 = new Player('SCORPION', ['example', 'gun'], 1);
-const player2 = new Player('SONYA', ['example', 'gun'], 2);
+function elHP() {
+  return document.querySelector(`.player${this.player} .life`);
+}
+
+function renderHP() {
+  const lifeEl = this.elHP();
+  lifeEl.style.width = `${this.hp}%`;
+}
+
+const reloadButton = createReloadButton();
+
+reloadButton.addEventListener('click', () => {
+  window.location.reload();
+});
 
 randomButton.addEventListener('click', () => {
-  changeHP(player1, player2);
-  changeHP(player2, player1);
+  player1.changeHP(getRandomNumber());
+  player2.changeHP(getRandomNumber());
+
+  player1.renderHP();
+  player2.renderHP();
+
+  if (player1.hp === 0 || player2.hp === 0) {
+    randomButton.disabled = true;
+    reloadButton.style.display = 'block';
+  }
+
+  if (player1.hp === 0 && player1.hp < player2.hp) {
+    renderPlayerWin(player2.name);
+  } else if (player2.hp === 0 && player2.hp < player1.hp) {
+    renderPlayerWin(player1.name);
+  } else if (player1.hp === 0 && player2.hp === 0) {
+    renderPlayerWin();
+  }
 });
 
 createPlayer('player1', player1);

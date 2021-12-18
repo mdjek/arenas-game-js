@@ -159,8 +159,8 @@ formFight.addEventListener('submit', (e) => {
     item.checked = false;
   }
 
-  const damagePlayer1 = enemy.hit === attack.defence ? enemy.value : 0;
-  const damagePlayer2 = attack.hit === enemy.defence ? attack.value : 0;
+  const damagePlayer1 = enemy.hit === attack.defence ? 0 : enemy.value;
+  const damagePlayer2 = attack.hit === enemy.defence ? 0 : attack.value;
 
   player1.changeHP(damagePlayer1);
   player2.changeHP(damagePlayer2);

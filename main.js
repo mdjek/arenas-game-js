@@ -6,8 +6,15 @@ const NAME_MAP = {
   SUBZERO: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif'
 };
 
+const HIT = {
+  head: 30,
+  body: 25,
+  foot: 20,
+}
+const ATTACK = ['head', 'body', 'foot'];
+
 const arenasBlock = document.querySelector('.arenas');
-const randomButton = document.querySelector('.control button');
+const formFight = document.querySelector('.control')
 
 const getRandomNumber = (min = 1, max = 20) => {
   return Math.floor(
@@ -17,7 +24,7 @@ const getRandomNumber = (min = 1, max = 20) => {
 
 const player1 = {
   name: 'SCORPION',
-  hp: 45,
+  hp: 100,
   player: 1,
   img: (function () {
     return NAME_MAP['SCORPION']
@@ -33,7 +40,7 @@ const player1 = {
 
 const player2 = {
   name: 'SONYA',
-  hp: 75,
+  hp: 100,
   player: 2,
   img: (function() { return NAME_MAP['SONYA'] })(),
   weapon: ['example', 'gun'],
@@ -116,21 +123,52 @@ function renderHP() {
   lifeEl.style.width = `${this.hp}%`;
 }
 
+function enemyAttack() {
+  const hit = ATTACK[getRandomNumber(0, 2)];
+  const defence = ATTACK[getRandomNumber(0, 2)];
+
+  return({
+    value: getRandomNumber(0, HIT[hit]),
+    hit,
+    defence,
+  });
+}
+
 const reloadButton = createReloadButton();
 
 reloadButton.addEventListener('click', () => {
   window.location.reload();
 });
 
-randomButton.addEventListener('click', () => {
-  player1.changeHP(getRandomNumber());
-  player2.changeHP(getRandomNumber());
+formFight.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const enemy = enemyAttack();
+
+  const attack = {};
+
+  for (let item of formFight) {
+    if (item.checked && item.name === 'hit') {
+      attack.value = getRandomNumber(0, HIT[item.value]);
+      attack.hit = item.value;
+    }
+
+    if (item.checked && item.name === 'defence') {
+      attack.defence = item.value;
+    }
+
+    item.checked = false;
+  }
+
+  const damagePlayer1 = enemy.hit === attack.defence ? enemy.value : 0;
+  const damagePlayer2 = attack.hit === enemy.defence ? attack.value : 0;
+
+  player1.changeHP(damagePlayer1);
+  player2.changeHP(damagePlayer2);
 
   player1.renderHP();
   player2.renderHP();
 
   if (player1.hp === 0 || player2.hp === 0) {
-    randomButton.disabled = true;
     reloadButton.style.display = 'block';
   }
 

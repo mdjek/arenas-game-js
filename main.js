@@ -197,6 +197,10 @@ const playerAttack = () => {
 const showResult = () => {
   if (player1.hp === 0 || player2.hp === 0) {
     reloadButton.style.display = 'block';
+
+    for (let item of formFight) {
+      item.disabled = true;
+    }
   }
 
   if (player1.hp === 0 && player1.hp < player2.hp) {

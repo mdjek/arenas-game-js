@@ -1,4 +1,4 @@
-const logs = {
+const LOGS = {
   start: 'Часы показывали [time], когда [player1] и [player2] бросили вызов друг другу.',
   end: [
     'Результат удара [playerWins]: [playerLose] - труп',
@@ -67,13 +67,8 @@ const player1 = {
   name: 'SCORPION',
   hp: 100,
   player: 1,
-  img: (function () {
-    return NAME_MAP['SCORPION']
-  })(),
+  img: NAME_MAP['SCORPION'],
   weapon: ['example', 'gun'],
-  attack: function () {
-    console.log(`${this.name} Fight...`)
-  },
   changeHP,
   elHP,
   renderHP
@@ -83,9 +78,8 @@ const player2 = {
   name: 'SONYA',
   hp: 100,
   player: 2,
-  img: (function() { return NAME_MAP['SONYA'] })(),
+  img: NAME_MAP['SONYA'],
   weapon: ['example', 'gun'],
-  attack: () => console.log(`${this.name} Fight...`),
   changeHP,
   elHP,
   renderHP
@@ -104,8 +98,7 @@ function elHP() {
 }
 
 function renderHP() {
-  const lifeEl = this.elHP();
-  lifeEl.style.width = `${this.hp}%`;
+  this.elHP().style.width = `${this.hp}%`;
 }
 
 const createHTMLElement = (tag = 'div', classname, content) => {
@@ -119,30 +112,30 @@ const createHTMLElement = (tag = 'div', classname, content) => {
     element.innerHTML = content;
   }
 
-  if (typeof content === 'object' && content.length && content.length > 0) {
+  if (Array.isArray(content)) {
     content.forEach((item) => element.appendChild(item));
   }
 
   return element;
 };
 
-const createPlayerMarkup = (playerName, name, hp, pathToImg) => {
+const createPlayerMarkup = ({playerId, name, hp, img}) => {
   const lifeEl = createHTMLElement('div', 'life');
   const nameEl = createHTMLElement('div', 'name', name);
   const imgEl = createHTMLElement('img');
 
   lifeEl.style.width = `${hp}%`;
-  imgEl.src = pathToImg;
+  imgEl.src = img;
 
   const progressbarEl = createHTMLElement('div', 'progressbar', [lifeEl, nameEl]);
   const characterEl = createHTMLElement('div', 'character', [imgEl]);
 
-  return createHTMLElement('div', playerName, [progressbarEl, characterEl]);
+  return createHTMLElement('div', playerId, [progressbarEl, characterEl]);
 };
 
-const createPlayer = (playerName, data) => {
+const createPlayer = (playerId, data) => {
   const { name, hp, img } = data;
-  const player = createPlayerMarkup(playerName, name, hp, img);
+  const player = createPlayerMarkup({playerId, name, hp, img});
 
   arenasBlock.appendChild(player);
 };
@@ -165,8 +158,8 @@ const createReloadButton = () => {
 };
 
 const enemyAttack = () => {
-  const hit = ATTACK[getRandomNumber(0, 2)];
-  const defence = ATTACK[getRandomNumber(0, 2)];
+  const hit = ATTACK[getRandomNumber(0, ATTACK.length - 1)];
+  const defence = ATTACK[getRandomNumber(0, ATTACK.length - 1)];
 
   return({
     value: getRandomNumber(0, HIT[hit]),
@@ -196,7 +189,11 @@ const playerAttack = () => {
 
 const showResult = () => {
   if (player1.hp === 0 || player2.hp === 0) {
-    reloadButton.style.display = 'block';
+    const reloadButton = createReloadButton();
+
+    reloadButton.addEventListener('click', () => {
+      window.location.reload();
+    });
 
     for (let item of formFight) {
       item.disabled = true;
@@ -215,20 +212,21 @@ const showResult = () => {
   }
 }
 
-const generateLogs = (type, player1, player2, damage = 0) => {
-  if ((type === 'hit' && damage === 0) || (type === 'defence' && damage !== 0)) {
-    return;
-  }
+const normalizeTime = (time) => {
+  return time < 10 ? `0${time}` : time;
+}
 
+const generateLogs = (type, player1, player2, damage) => {
   const text = type.includes('start', 'draw')
-    ? logs[type]
-    : logs[type][getRandomNumber(0, logs[type].length - 1)];
+    ? LOGS[type]
+    : LOGS[type][getRandomNumber(0, LOGS[type].length - 1)];
 
   const date = new Date();
   const hours = date.getHours();
   const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
 
-  const formattedDate = `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}`;
+  const formattedDate = `${normalizeTime(hours)}:${normalizeTime(minutes)}:${normalizeTime(seconds)}`;
 
   let logMessage = '';
 
@@ -240,6 +238,7 @@ const generateLogs = (type, player1, player2, damage = 0) => {
         .replace('[player2]', player2.name);
       break;
     case 'end':
+      logMessage = `${formattedDate} - ${text}`;
       logMessage = text
         .replace('[playerWins]', player1.name)
         .replace('[playerLose]', player2.name);
@@ -261,27 +260,29 @@ const generateLogs = (type, player1, player2, damage = 0) => {
   chatBlock.insertAdjacentHTML('afterbegin', `<p>${logMessage}</p>`)
 }
 
-const reloadButton = createReloadButton();
-
-reloadButton.addEventListener('click', () => {
-  window.location.reload();
-});
-
 formFight.addEventListener('submit', (e) => {
   e.preventDefault();
 
   const enemy = enemyAttack();
   const attack = playerAttack();
-  const damagePlayer1 = enemy.hit === attack.defence ? 0 : enemy.value;
-  const damagePlayer2 = attack.hit === enemy.defence ? 0 : attack.value;
+  let damagePlayer1 = 0;
+  let damagePlayer2 = 0;
 
-  player1.changeHP(damagePlayer1);
-  player2.changeHP(damagePlayer2);
+  if (enemy.hit !== attack.defence) {
+    damagePlayer1 = enemy.value;
+    player1.changeHP(damagePlayer1);
+    generateLogs('hit', player2, player1, damagePlayer1);
+  } else{
+    generateLogs('defence', player1, player2);
+  }
 
-  generateLogs('hit', player2, player1, damagePlayer1);
-  generateLogs('hit', player1, player2, damagePlayer2);
-  generateLogs('defence', player1, player2, damagePlayer1);
-  generateLogs('defence', player2, player1, damagePlayer2);
+  if (attack.hit !== enemy.defence) {
+    damagePlayer2 = attack.value;
+    player2.changeHP(damagePlayer2);
+    generateLogs('hit', player1, player2, damagePlayer2);
+  } else{
+    generateLogs('defence', player2, player1);
+  }
 
   player1.renderHP();
   player2.renderHP();

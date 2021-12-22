@@ -1,7 +1,7 @@
-import { doFightStep } from './fight';
-import { createPlayer } from './layout';
-import { player1, player2 } from './player';
-import { generateLogs } from './logger';
+import { doFightStep } from './fight.js';
+import { createPlayer } from './layout.js';
+import { player1, player2 } from './player.js';
+import { generateLogs } from './logger.js';
 
 class Game {
   start = () => {

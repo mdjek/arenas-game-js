@@ -4,6 +4,6 @@ export const getRandomNumber = (min = 1, max = 20) => {
   );
 };
 
-export const normalizeTime = (time) => {
+export const normalizeTime = time => {
   return time < 10 ? `0${time}` : time;
 }

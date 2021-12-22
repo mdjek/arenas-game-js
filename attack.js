@@ -12,7 +12,7 @@ export const enemyAttack = () => {
   });
 }
 
-export const playerAttack = (formFight) => {
+export const playerAttack = formFight => {
   const attack = {};
 
   for (let item of formFight) {

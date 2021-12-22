@@ -1,8 +1,8 @@
 import { player1, player2 } from './player.js';
-import { generateLogs } from './logs.js';
-import { createReloadButton, renderPlayerWin } from './markup.js';
+import { generateLogs } from './logger.js';
+import { createReloadButton, renderPlayerWin } from './layout.js';
 
-export const showResult = (formFight) => {
+export const showResult = formFight => {
   if (player1.hp === 0 || player2.hp === 0) {
     const reloadButton = createReloadButton();
 

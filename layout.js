@@ -41,7 +41,7 @@ export const createReloadButton = () => {
   return reloadButton;
 };
 
-export const renderPlayerWin = (name) => {
+export const renderPlayerWin = name => {
   const winnerName = name ? `${name} wins` : 'draw';
   const winTitle = createHTMLElement('div', 'winTitle', winnerName);
 

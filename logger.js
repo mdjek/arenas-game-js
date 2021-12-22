@@ -17,7 +17,7 @@ export const generateLogs = (type, { name }, { name: playerName2, hp }, damage =
 
   let logMessage = '';
 
-  switch(type) {
+  switch (type) {
     case 'start':
       logMessage = text
         .replace('[time]', formattedDate)

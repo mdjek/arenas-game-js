@@ -1,15 +1,24 @@
-import { enemyAttack, playerAttack } from './attack.js';
-import { player1, player2 } from './player.js';
+import { playerAttack } from './attack.js';
+import { player1, player2 } from './game.js';
 import { generateLogs } from './logger.js';
 import { showResult } from './result.js';
 
-const doFightStep = formFight => {
-  const { hit: enemyHit, defence: enemyDefence, value: enemyValue } = enemyAttack();
-  const { hit, defence, value } = playerAttack(formFight);
+const doFightStep = async (fightAction, formFight, arenasBlock) => {
+  const { hit, defence } = playerAttack(formFight);
+
+  const resultFightAction = await fightAction({
+    hit,
+    defence,
+  });
+
+  const { player1: player, player2: enemy } = resultFightAction;
+  const { hit: playerHit, defence: playerDefence, value: playerValue } = player;
+  const { hit: enemyHit, defence: enemyDefence, value: enemyValue } = enemy;
+
   let damagePlayer1 = 0;
   let damagePlayer2 = 0;
 
-  if (enemyHit !== defence) {
+  if (enemyHit !== playerDefence) {
     damagePlayer1 = enemyValue;
     player1.changeHP(damagePlayer1);
     generateLogs('hit', player2, player1, damagePlayer1);
@@ -17,8 +26,8 @@ const doFightStep = formFight => {
     generateLogs('defence', player1, player2);
   }
 
-  if (hit !== enemyDefence) {
-    damagePlayer2 = value;
+  if (playerHit !== enemyDefence) {
+    damagePlayer2 = playerValue;
     player2.changeHP(damagePlayer2);
     generateLogs('hit', player1, player2, damagePlayer2);
   } else {
@@ -28,7 +37,7 @@ const doFightStep = formFight => {
   player1.renderHP();
   player2.renderHP();
 
-  showResult(formFight);
+  showResult(formFight, arenasBlock);
 }
 
 export { doFightStep };

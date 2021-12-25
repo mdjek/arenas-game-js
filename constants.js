@@ -38,14 +38,6 @@ export const LOGS = {
   draw: 'Ничья - это тоже победа!'
 };
 
-export const NAME_MAP = {
-  SCORPION: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
-  KITANA: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
-  LIUKANG: 'http://reactmarathon-api.herokuapp.com/assets/liukang.gif',
-  SONYA: 'http://reactmarathon-api.herokuapp.com/assets/sonya.gif',
-  SUBZERO: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif'
-};
-
 export const HIT = {
   head: 30,
   body: 25,

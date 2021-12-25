@@ -1,10 +1,10 @@
-import { player1, player2 } from './player.js';
+import { player1, player2 } from './game.js';
 import { generateLogs } from './logger.js';
 import { createReloadButton, renderPlayerWin } from './layout.js';
 
-export const showResult = formFight => {
+export const showResult = (formFight, arenasBlock) => {
   if (player1.hp === 0 || player2.hp === 0) {
-    const reloadButton = createReloadButton();
+    const reloadButton = createReloadButton(arenasBlock);
 
     reloadButton.addEventListener('click', () => {
       window.location.reload();
@@ -16,13 +16,13 @@ export const showResult = formFight => {
   }
 
   if (player1.hp === 0 && player1.hp < player2.hp) {
-    renderPlayerWin(player2.name);
+    renderPlayerWin(player2.name, arenasBlock);
     generateLogs('end', player2, player1);
   } else if (player2.hp === 0 && player2.hp < player1.hp) {
-    renderPlayerWin(player1.name);
+    renderPlayerWin(player1.name, arenasBlock);
     generateLogs('end', player1, player2);
   } else if (player1.hp === 0 && player2.hp === 0) {
-    renderPlayerWin();
+    renderPlayerWin(null, arenasBlock);
     generateLogs('draw');
   }
 }

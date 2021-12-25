@@ -1,4 +1,4 @@
-import { NAME_MAP } from './constants.js';
+import { createPlayerMarkup } from './layout.js';
 
 class Player {
   constructor(props) {
@@ -6,7 +6,21 @@ class Player {
     this.name = props.name;
     this.hp = props.hp;
     this.img = props.img;
+    this.entry = props.entry;
   }
+
+  createPlayer = () => {
+    const player = createPlayerMarkup(
+      {
+        id: this.id,
+        name: this.name,
+        hp: this.hp,
+        img: this.img
+      }
+    );
+
+    this.entry.appendChild(player);
+  };
 
   changeHP = (value) => {
     this.hp -= value;
@@ -16,21 +30,9 @@ class Player {
     }
   };
 
-  elHP = () => document.querySelector(`.player${this.id} .life`);
+  elHP = () => document.querySelector(`.${this.id} .life`);
 
   renderHP = () => this.elHP().style.width = `${this.hp}%`;
 }
 
-export const player1 = new Player({
-  id: 1,
-  name: 'SCORPION',
-  hp: 100,
-  img: NAME_MAP['SCORPION'],
-});
-
-export const player2 = new Player({
-  id: 2,
-  name: 'SONYA',
-  hp: 100,
-  img: NAME_MAP['SONYA'],
-});
+export { Player };

@@ -1,9 +1,8 @@
 import { LOGS } from './constants.js';
 import { getRandomNumber, normalizeTime } from './utils.js';
 
-const chatBlock = document.querySelector('.chat');
-
-export const generateLogs = (type, { name }, { name: playerName2, hp }, damage = 0) => {
+export const generateLogs = (type, { name } = {}, { name: playerName2, hp } = {}, damage = 0) => {
+  const chatBlock = document.querySelector('.chat');
   const text = type.includes('start', 'draw')
     ? LOGS[type]
     : LOGS[type][getRandomNumber(0, LOGS[type].length - 1)];

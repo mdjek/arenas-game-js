@@ -17,7 +17,6 @@ export const playerAttack = formFight => {
 
   for (let item of formFight) {
     if (item.checked && item.name === 'hit') {
-      attack.value = getRandomNumber(1, HIT[item.value]);
       attack.hit = item.value;
     }
 

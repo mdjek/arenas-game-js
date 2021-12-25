@@ -5,7 +5,7 @@ export const enemyAttack = () => {
   const hit = ATTACK[getRandomNumber(0, ATTACK.length - 1)];
   const defence = ATTACK[getRandomNumber(0, ATTACK.length - 1)];
 
-  return({
+  return ({
     value: getRandomNumber(1, HIT[hit]),
     hit,
     defence,

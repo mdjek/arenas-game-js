@@ -18,7 +18,7 @@ export const createHTMLElement = (tag = 'div', classname, content) => {
   return element;
 };
 
-export const createPlayerMarkup = ({playerId, name, hp, img}) => {
+export const createPlayerMarkup = ({ playerId, name, hp, img }) => {
   const lifeEl = createHTMLElement('div', 'life');
   const nameEl = createHTMLElement('div', 'name', name);
   const imgEl = createHTMLElement('img');
@@ -50,7 +50,7 @@ export const renderPlayerWin = name => {
 
 export const createPlayer = (playerId, data) => {
   const { name, hp, img } = data;
-  const player = createPlayerMarkup({playerId, name, hp, img});
+  const player = createPlayerMarkup({ playerId, name, hp, img });
 
   arenasBlock.appendChild(player);
 

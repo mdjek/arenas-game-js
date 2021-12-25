@@ -4,24 +4,24 @@ import { generateLogs } from './logger.js';
 import { showResult } from './result.js';
 
 const doFightStep = formFight => {
-  const enemy = enemyAttack();
-  const attack = playerAttack(formFight);
+  const { hit: enemyHit, defence: enemyDefence, value: enemyValue } = enemyAttack();
+  const { hit, defence, value } = playerAttack(formFight);
   let damagePlayer1 = 0;
   let damagePlayer2 = 0;
 
-  if (enemy.hit !== attack.defence) {
-    damagePlayer1 = enemy.value;
+  if (enemyHit !== defence) {
+    damagePlayer1 = enemyValue;
     player1.changeHP(damagePlayer1);
     generateLogs('hit', player2, player1, damagePlayer1);
-  } else{
+  } else {
     generateLogs('defence', player1, player2);
   }
 
-  if (attack.hit !== enemy.defence) {
-    damagePlayer2 = attack.value;
+  if (hit !== enemyDefence) {
+    damagePlayer2 = value;
     player2.changeHP(damagePlayer2);
     generateLogs('hit', player1, player2, damagePlayer2);
-  } else{
+  } else {
     generateLogs('defence', player2, player1);
   }
 

@@ -1,22 +1,45 @@
+import { Api } from './api.js';
 import { doFightStep } from './fight.js';
-import { createPlayer } from './layout.js';
-import { player1, player2 } from './player.js';
 import { generateLogs } from './logger.js';
+import { Player } from './player.js';
+
+let player1;
+let player2;
 
 class Game {
-  start = () => {
+  start = async () => {
+    const api = new Api();
     const formFight = document.querySelector('.control');
+    const arenasBlock = document.querySelector('.arenas');
 
     formFight.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      doFightStep(formFight);
+      doFightStep(api.fightStep, formFight, arenasBlock);
     });
 
-    createPlayer('player1', player1);
-    createPlayer('player2', player2);
+    // const p1 = playerList[getRandomNumber(0, playerList.length - 1)];
+    // const p2 = playerList[getRandomNumber(0, playerList.length - 1)];
+
+    const p1 = await api.getRandomPlayer();
+    const p2 = await api.getRandomPlayer();
+
+    player1 = new Player({
+      ...p1,
+      id: 'player1',
+      entry: arenasBlock,
+    });
+
+    player2 = new Player({
+      ...p2,
+      id: 'player2',
+      entry: arenasBlock,
+    });
+
+    player1.createPlayer();
+    player2.createPlayer();
     generateLogs('start', player1, player2);
   }
 }
 
-export { Game };
+export { Game, player1, player2 };

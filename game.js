@@ -7,6 +7,8 @@ let player1;
 let player2;
 
 class Game {
+  getLocalPlayerData = () => JSON.parse(localStorage.getItem('player1'));
+
   start = async () => {
     const api = new Api();
     const formFight = document.querySelector('.control');
@@ -18,10 +20,7 @@ class Game {
       doFightStep(api.fightStep, formFight, arenasBlock);
     });
 
-    // const p1 = playerList[getRandomNumber(0, playerList.length - 1)];
-    // const p2 = playerList[getRandomNumber(0, playerList.length - 1)];
-
-    const p1 = await api.getRandomPlayer();
+    const p1 = this.getLocalPlayerData() || await api.getRandomPlayer();
     const p2 = await api.getRandomPlayer();
 
     player1 = new Player({

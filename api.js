@@ -15,7 +15,7 @@ class Api {
     ).then(response => response.json())
   }
 
-  fetchPlayerList = () => {
+  fetchPlayers = () => {
     return this.getRequest('https://reactmarathon-api.herokuapp.com/api/mk/players');
   }
 
